@@ -27,6 +27,6 @@ pub mod source;
 pub use source::Source;
 
 mod buffer;
-pub use buffer::Buffer;
+pub use buffer::{Buffer, Format};
 
 pub mod extension;

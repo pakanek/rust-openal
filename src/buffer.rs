@@ -4,6 +4,18 @@ use std::marker::PhantomData;
 use ffi::*;
 use ::{Error, Sample};
 
+/// Determines format of Buffer data
+pub enum Format {
+    /// Single channel, 8-bit
+    Mono8,
+    /// Single channel, 16-bit
+    Mono16,
+    /// Two channels, 8-bit
+    Stereo8,
+    /// Two channels, 16-bit
+    Stereo16,
+}
+
 /// A buffer holding sample data.
 #[derive(PartialEq, Eq)]
 pub struct Buffer<'a> {
@@ -34,6 +46,25 @@ impl<'a> Buffer<'a> {
 
 		Ok(())
 	}
+
+    /// Copy new data into buffer
+    pub fn data<T>(&mut self, format: Format, data: &[T], freq: u32) -> Result<(), Error> {
+        unsafe {
+            al_try!(alBufferData(
+                self.id,
+                match format {
+                    Format::Mono8 => AL_FORMAT_MONO8,
+                    Format::Mono16 => AL_FORMAT_MONO16,
+                    Format::Stereo8 => AL_FORMAT_STEREO8,
+                    Format::Stereo16 => AL_FORMAT_STEREO16,
+                },
+                data.as_ptr() as *const _,
+                (mem::size_of::<T>() * data.len()) as ALsizei,
+                freq as ALint,
+            ));
+        }
+        Ok(())
+    }
 
 	#[doc(hidden)]
 	pub unsafe fn id(&self) -> ALuint {
