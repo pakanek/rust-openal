@@ -47,7 +47,7 @@ unsafe impl Context for *mut ALCcontext {
 }
 
 // Context can implement Device since it belongs to one
-unsafe impl Device for Context {
+unsafe impl Device for dyn Context {
 	fn as_ptr(&self) -> *const ALCdevice {
 		unsafe {
 			alcGetContextsDevice(self.as_ptr())
