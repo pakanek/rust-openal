@@ -24,14 +24,7 @@ impl<'a> Buffer<'a> {
 	#[doc(hidden)]
 	pub unsafe fn new<T: Sample>(channels: u16, data: &[T], rate: u32) -> Result<Self, Error> {
 		let mut buffer = (Buffer::empty())?;
-
-		match buffer.fill(channels, data, rate) {
-			Ok(..) =>
-				Ok(buffer),
-
-			Err(error) =>
-				Err(error)
-		}
+        buffer.fill(channels, data, rate).map(|_| buffer)
 	}
 
 	#[doc(hidden)]
