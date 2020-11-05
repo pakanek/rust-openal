@@ -23,7 +23,7 @@ impl<'a> Buffer<'a> {
 
 	#[doc(hidden)]
 	pub unsafe fn new<T: Sample>(channels: u16, data: &[T], rate: u32) -> Result<Self, Error> {
-		let mut buffer = try!(Buffer::empty());
+		let mut buffer = (Buffer::empty())?;
 
 		match buffer.fill(channels, data, rate) {
 			Ok(..) =>
@@ -36,7 +36,7 @@ impl<'a> Buffer<'a> {
 
 	#[doc(hidden)]
 	pub unsafe fn fill<T: Sample>(&mut self, channels: u16, data: &[T], rate: u32) -> Result<(), Error> {
-		al_try!(alBufferData(self.id, try!(<T as Sample>::format(channels)), data.as_ptr() as *const _,
+		al_try!(alBufferData(self.id, <T as Sample>::format(channels)?, data.as_ptr() as *const _,
 			(mem::size_of::<T>() * data.len()) as ALsizei, rate as ALint));
 
 		Ok(())
@@ -92,12 +92,12 @@ impl<'a> Buffer<'a> {
 
 impl<'a> ::std::fmt::Debug for Buffer<'a> {
 	fn fmt(&self, f: &mut ::std::fmt::Formatter) -> Result<(), ::std::fmt::Error> {
-		try!(f.write_str("openal::Buffer("));
-		try!(f.write_str(&format!("{}; ", unsafe { self.id() })));
-		try!(f.write_str(&format!("rate={} ", self.rate())));
-		try!(f.write_str(&format!("bits={} ", self.bits())));
-		try!(f.write_str(&format!("channels={} ", self.channels())));
-		try!(f.write_str(&format!("len={}", self.len())));
+		(f.write_str("openal::Buffer("))?;
+		(f.write_str(&format!("{}; ", unsafe { self.id() })))?;
+		(f.write_str(&format!("rate={} ", self.rate())))?;
+		(f.write_str(&format!("bits={} ", self.bits())))?;
+		(f.write_str(&format!("channels={} ", self.channels())))?;
+		(f.write_str(&format!("len={}", self.len())))?;
 		f.write_str(")")
 	}
 }

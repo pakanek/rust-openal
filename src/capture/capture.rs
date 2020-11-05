@@ -28,7 +28,7 @@ impl<T: Sample> Capture<T> {
 		unsafe {
 			let ptr = alcCaptureOpenDevice(ptr::null(),
 				rate as ALCuint,
-				try!(<U as Sample>::format(channels)),
+				<U as Sample>::format(channels)?,
 				size as ALCsizei);
 
 			if ptr.is_null() {
@@ -45,7 +45,7 @@ impl<T: Sample> Capture<T> {
 		unsafe {
 			let ptr = alcCaptureOpenDevice(CString::new(name.as_bytes()).unwrap().as_ptr(),
 				rate as ALCuint,
-				try!(<U as Sample>::format(channels)),
+				<U as Sample>::format(channels)?,
 				size as ALCsizei);
 
 			if ptr.is_null() {
@@ -102,8 +102,8 @@ unsafe impl<T: Sample> Device for Capture<T> {
 
 impl<T: Sample> ::std::fmt::Debug for Capture<T> {
 	fn fmt(&self, f: &mut ::std::fmt::Formatter) -> Result<(), ::std::fmt::Error> {
-		try!(f.write_str("openal::Capture("));
-		try!(f.write_str(&format!("len={}; ", self.len())));
+		f.write_str("openal::Capture(")?;
+		f.write_str(&format!("len={}; ", self.len()))?;
 		f.write_str(")")
 	}
 }

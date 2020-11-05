@@ -28,8 +28,8 @@ impl<'a> Stream<'a> {
 impl<'a> Stream<'a> {
 	/// Pushes the data into the source.
 	pub fn push<T: Sample>(&mut self, channels: u16, data: &[T], rate: u32) -> Result<(), Error> {
-		let buffer = try!(unsafe { Buffer::new(channels, data, rate) });
-		try!(self.clear());
+		let buffer = unsafe { Buffer::new(channels, data, rate)? };
+		self.clear()?;
 
 		unsafe {
 			al_try!(alSourceQueueBuffers(self.id(), 1, &buffer.id()));
@@ -107,9 +107,9 @@ impl<'a> DerefMut for Stream<'a> {
 
 impl<'a> ::std::fmt::Debug for Stream<'a> {
 	fn fmt(&self, f: &mut ::std::fmt::Formatter) -> Result<(), ::std::fmt::Error> {
-		try!(f.write_str("openal::source::Stream("));
-		try!(f.write_str(&format!("{}; ", unsafe { self.id() })));
-		try!(f.write_str(&format!("len={}", self.buffers.len())));
+		f.write_str("openal::source::Stream(")?;
+		f.write_str(&format!("{}; ", unsafe { self.id() }))?;
+		f.write_str(&format!("len={}", self.buffers.len()))?;
 		f.write_str(")")
 	}
 }
