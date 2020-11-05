@@ -100,21 +100,7 @@ impl From<ALC> for Error {
 
 impl fmt::Display for Error {
 	fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-		f.write_str(error::Error::description(self))
-	}
-}
-
-impl fmt::Debug for Error {
-	fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-		f.write_str("openal::Error(")?;
-		fmt::Display::fmt(self, f)?;
-		f.write_str(")")
-	}
-}
-
-impl error::Error for Error {
-	fn description(&self) -> &str {
-		match self {
+		f.write_str(match self {
 			&Error::None =>
 				"There is no current error.",
 
@@ -138,6 +124,17 @@ impl error::Error for Error {
 
 			&Error::OutOfMemory =>
 				"Unable to allocate memory.",
-		}
+		})
 	}
+}
+
+impl fmt::Debug for Error {
+	fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+		f.write_str("openal::Error(")?;
+		fmt::Display::fmt(self, f)?;
+		f.write_str(")")
+	}
+}
+
+impl error::Error for Error {
 }
