@@ -345,7 +345,7 @@ impl<'a> Source<'a> {
 	}
 
 	/// Pushes a buffer into the source's queue.
-	pub fn push<'b: 'a>(&'b mut self, buffer: &'b Buffer<'b>) -> Result<(), Error> {
+	pub fn push<'b: 'a>(&mut self, buffer: &'b Buffer<'b>) -> Result<(), Error> {
 		unsafe {
 			al_try!(alSourceQueueBuffers(self.id, 1, &buffer.id()));
 
